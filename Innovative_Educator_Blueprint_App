@@ -1,1 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>創新教育者事業藍圖 | 策略儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fafaf9; /* Stone 50 */
+            color: #44403c; /* Stone 700 */
+        }
 
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .nav-active {
+            border-bottom: 2px solid #ea580c; /* Orange 600 */
+            color: #ea580c;
+            font-weight: 700;
+        }
+
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hide scrollbar for clean horizontal scroll if needed */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals with Focus Accents. Background: Stone-50 (#fafaf9). Text: Stone-700 (#44403c). Accents: Burnt Orange (#ea580c) for Action, Sage Green (#84cc16) for Growth, Slate Blue (#64748b) for Technology. Rationale: Professional, calm, yet energetic for an educator/entrepreneur. -->
+
+    <!-- Application Structure Plan:
+        1. **Hero Section**: Statement of Identity and Core Vision (100k/month). Sets the aspirational tone.
+        2. **Core Competency Dashboard (Radar Chart)**: Visualizes the intersection of "Japanese Teaching", "Marketing", "AI Tech", and "Growth". Interactive UVP cards explain WHY this mix is powerful.
+        3. **Strategic Roadmap (Interactive Tabs)**: Breaks down the 0-6 month plan into digestible phases. Users switch tabs to focus on specific actions (Product, Marketing, Revenue) without being overwhelmed by text.
+        4. **Capability Matrix (Dynamic Filter)**: Interactive grid to sort "Mastered", "Can Do", and "Want to Do". This allows the user to inventory their current assets vs. future dreams.
+        5. **Long-Term Vision (Cards)**: Visualizing the "Want to do" list as the ultimate destination.
+        
+        *Why this structure?* It moves from WHO (Identity) to HOW (Roadmap) to WHAT (Capabilities), following a logical "Golden Circle" flow (Why -> How -> What), optimizing for clarity and motivation.
+    -->
+    
+    <!-- Visualization & Content Choices:
+        1. **Radar Chart (Chart.js)**: Used for "Core Competencies". Goal: Show the balanced skillset required for the "Innovative Educator". Justification: A radar chart perfectly illustrates the multi-dimensional nature of the user's expertise (Teaching + Marketing + Tech).
+        2. **Interactive Phase Tabs (Vanilla JS)**: Used for the "6-Month Action Plan". Goal: Change view based on time horizon. Justification: Prevents information overload; allows focusing on immediate tasks vs future goals.
+        3. **Filterable Grid (Vanilla JS)**: Used for "Skills & Habits". Goal: Organize the "Can Do/Mastered" lists. Justification: The report lists many disparate items; filtering them makes the data explorable and less cluttered.
+        4. **Doughnut Chart (Chart.js)**: Used for "Revenue Potential". Goal: Visualize the 100k income goal composition (Hypothetical based on business model). Justification: Concrete visualization of the financial goal makes it feel more attainable.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased selection:bg-orange-100 selection:text-orange-900">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-stone-800 tracking-tight">創新教育者<span class="text-orange-600">.</span></span>
+                </div>
+                <div class="hidden sm:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('hero')" class="text-stone-500 hover:text-orange-600 px-3 py-2 text-sm font-medium transition-colors">願景</button>
+                    <button onclick="scrollToSection('competencies')" class="text-stone-500 hover:text-orange-600 px-3 py-2 text-sm font-medium transition-colors">核心優勢</button>
+                    <button onclick="scrollToSection('roadmap')" class="text-stone-500 hover:text-orange-600 px-3 py-2 text-sm font-medium transition-colors">行動計畫</button>
+                    <button onclick="scrollToSection('matrix')" class="text-stone-500 hover:text-orange-600 px-3 py-2 text-sm font-medium transition-colors">能力矩陣</button>
+                </div>
+                <!-- Mobile menu button placeholder -->
+                <div class="flex items-center sm:hidden">
+                   <button class="text-stone-500 hover:text-stone-700" onclick="alert('請使用桌機版瀏覽以獲得最佳體驗')">
+                       <i class="fas fa-bars"></i>
+                   </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="bg-white pt-16 pb-12 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl tracking-tight font-extrabold text-stone-900 sm:text-5xl md:text-6xl mb-6">
+                    <span class="block">日文教學專業</span>
+                    <span class="block text-orange-600">行銷策略 × AI 數位應用</span>
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-base text-stone-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl leading-relaxed">
+                    打造符合市場需求的課程與個人品牌，透過高效、互動的日語課程，幫助學員快速掌握技能。
+                    將專業熱情轉化為每月十萬元以上的可持續商業價值。
+                </p>
+                <div class="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center gap-4">
+                    <div class="bg-orange-50 px-6 py-4 rounded-lg border border-orange-100 text-center">
+                        <span class="block text-2xl font-bold text-orange-700">月入 10 萬+</span>
+                        <span class="text-sm text-orange-600 font-medium">財務目標</span>
+                    </div>
+                    <div class="bg-blue-50 px-6 py-4 rounded-lg border border-blue-100 text-center">
+                        <span class="block text-2xl font-bold text-blue-700">AI 賦能</span>
+                        <span class="text-sm text-blue-600 font-medium">差異化優勢</span>
+                    </div>
+                    <div class="bg-green-50 px-6 py-4 rounded-lg border border-green-100 text-center">
+                        <span class="block text-2xl font-bold text-green-700">個人品牌</span>
+                        <span class="text-sm text-green-600 font-medium">長期資產</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Core Competencies Section -->
+    <section id="competencies" class="py-16 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-stone-900">核心優勢與價值主張</h2>
+                <p class="mt-4 text-lg text-stone-500 max-w-2xl mx-auto">
+                    本區塊展示您的核心競爭力。透過雷達圖，我們可以直觀地看到「日文專業」與「行銷」、「科技」如何結合，形成獨特的市場定位（UVP）：高效、現代化且具備商業思維的學習體驗。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Chart Container -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-bold text-stone-700 mb-4 text-center">能力分布雷達</h3>
+                    <div class="chart-container">
+                        <canvas id="competencyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- UVP Details -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl border-l-4 border-blue-500 shadow-sm card-hover">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 text-blue-600">
+                                    <i class="fas fa-book-open"></i>
+                                </span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-stone-900">教學專業</h3>
+                                <p class="mt-2 text-stone-500 text-sm">豐富的日語教學經驗，持續產出高品質講義。這是您的品質保證。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border-l-4 border-orange-500 shadow-sm card-hover">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-orange-100 text-orange-600">
+                                    <i class="fas fa-bullhorn"></i>
+                                </span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-stone-900">行銷與溝通</h3>
+                                <p class="mt-2 text-stone-500 text-sm">善用文字力量給予支持，並具備實戰行銷能力（每天寄送履歷）。建立親和力強的品牌形象。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border-l-4 border-purple-500 shadow-sm card-hover">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-purple-100 text-purple-600">
+                                    <i class="fas fa-robot"></i>
+                                </span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-stone-900">科技整合 (AI)</h3>
+                                <p class="mt-2 text-stone-500 text-sm">善用 ChatGPT 提升創意、Notion 系統化管理、GAMMA 製作教材。創造效率與市場差異化。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="py-16 bg-white border-t border-stone-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-stone-900">月入十萬行動路徑 (0-6 個月)</h2>
+                <p class="mt-4 text-lg text-stone-500 max-w-3xl mx-auto">
+                    此區域將您的事業發展分為三個關鍵階段。點擊下方的階段標籤，深入了解每個時期的具體行動項目、目的與預期成果。這是從「構思」到「變現」的具體執行指南。
+                </p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex justify-center mb-8 border-b border-stone-200">
+                <button onclick="switchPhase(0)" id="tab-0" class="nav-active px-6 py-4 text-sm font-medium focus:outline-none transition-all">
+                    階段一：產品與系統化
+                    <span class="block text-xs font-normal mt-1 text-stone-400">0-2 個月</span>
+                </button>
+                <button onclick="switchPhase(1)" id="tab-1" class="text-stone-500 hover:text-stone-700 px-6 py-4 text-sm font-medium focus:outline-none transition-all">
+                    階段二：行銷與曝光
+                    <span class="block text-xs font-normal mt-1 text-stone-400">2-4 個月</span>
+                </button>
+                <button onclick="switchPhase(2)" id="tab-2" class="text-stone-500 hover:text-stone-700 px-6 py-4 text-sm font-medium focus:outline-none transition-all">
+                    階段三：變現與規模化
+                    <span class="block text-xs font-normal mt-1 text-stone-400">4-6 個月</span>
+                </button>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="phase-content" class="bg-stone-50 rounded-2xl p-8 border border-stone-100 shadow-inner min-h-[400px]">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Matrix Section -->
+    <section id="matrix" class="py-16 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-8">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-extrabold text-stone-900">能力與願望矩陣</h2>
+                    <p class="mt-4 text-lg text-stone-500">
+                        此互動區塊將您報告中的「精通的事」、「能做的事」與「想做的事」進行視覺化分類。透過篩選器，檢視您的現有資源庫以及未來的發展方向。
+                    </p>
+                </div>
+                <!-- Filters -->
+                <div class="mt-4 md:mt-0 flex space-x-2 bg-white p-1 rounded-lg shadow-sm border border-stone-200">
+                    <button onclick="filterMatrix('all')" class="matrix-filter px-4 py-2 text-sm font-medium rounded-md bg-stone-100 text-stone-900 hover:bg-stone-200 transition-colors active-filter" data-filter="all">全部</button>
+                    <button onclick="filterMatrix('master')" class="matrix-filter px-4 py-2 text-sm font-medium rounded-md text-stone-500 hover:bg-stone-100 transition-colors" data-filter="master">精通的事</button>
+                    <button onclick="filterMatrix('can')" class="matrix-filter px-4 py-2 text-sm font-medium rounded-md text-stone-500 hover:bg-stone-100 transition-colors" data-filter="can">能做的事</button>
+                    <button onclick="filterMatrix('want')" class="matrix-filter px-4 py-2 text-sm font-medium rounded-md text-stone-500 hover:bg-stone-100 transition-colors" data-filter="want">想做的事</button>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div id="matrix-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Items injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Goal/Financial Visualization -->
+    <section id="goals" class="py-16 bg-white border-t border-stone-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                
+                <!-- Financial Goal -->
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-900 mb-6">目標收入結構預測</h2>
+                    <p class="text-stone-500 mb-8">
+                        要達成每月十萬元以上的收入，建議的收入來源組合。透過高價課程與專業諮詢，將知識變現最大化。
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Long term Integration -->
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-900 mb-6">長期願景整合</h2>
+                    <p class="text-stone-500 mb-6">
+                        您的長期夢想並非遙不可及，而是事業成功的自然延伸。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+                            <i class="fas fa-graduation-cap text-orange-500 text-xl w-8"></i>
+                            <div>
+                                <h4 class="font-bold text-stone-800">美國留學 ($500萬美金)</h4>
+                                <p class="text-sm text-stone-600">作為事業成功的里程碑與再投資。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-purple-100">
+                            <i class="fas fa-magic text-purple-500 text-xl w-8"></i>
+                            <div>
+                                <h4 class="font-bold text-stone-800">OH 卡諮詢師</h4>
+                                <p class="text-sm text-stone-600">將「內在覺察」融入課程，提升深度。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <i class="fas fa-users text-blue-500 text-xl w-8"></i>
+                            <div>
+                                <h4 class="font-bold text-stone-800">事業夥伴與團隊</h4>
+                                <p class="text-sm text-stone-600">透過擴展舒適圈與社群經營來實現。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-900 text-stone-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-4 text-lg text-stone-300">將專業熱情轉化為可持續的商業價值</p>
+            <p class="text-sm">&copy; 2024 創新教育者事業藍圖. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data ---
+        
+        // Phase Data (Roadmap)
+        const phases = [
+            {
+                title: "階段一：產品定義與系統化",
+                goal: "建立標準化、可複製且高效的「課程系統」與「個人品牌基礎」。",
+                items: [
+                    { action: "核心產品開發", why: "將 YS 講師簡報轉化為市場驗證產品", result: "「理財商務日語入門」課程大綱" },
+                    { action: "Notion 系統化", why: "降低行政成本，提升學員體驗", result: "學員管理後台與資源庫" },
+                    { action: "GAMMA 教材製作", why: "確保視覺專業度與一致性", result: "3-5 個專業視覺化講義模板" },
+                    { action: "定義目標學員", why: "鎖定高價值付費群體", result: "精準學員 Persona (商務人士)" }
+                ]
+            },
+            {
+                title: "階段二：內容行銷與市場曝光",
+                goal: "啟動您的「行銷履歷」引擎，吸引高質量學員群。",
+                items: [
+                    { action: "升級「行銷履歷」", why: "從被動寄送轉為主動內容發佈", result: "日更短影音/社群貼文" },
+                    { action: "結合 ChatGPT 創意", why: "展示 AI 輔助學習的互動性", result: "3 篇 AI 日語學習示範內容" },
+                    { action: "舉辦線上工作坊", why: "低門檻市場驗證與名單收集", result: "1 場工作坊 + 50 份名單" }
+                ]
+            },
+            {
+                title: "階段三：高效變現與規模化",
+                goal: "將潛在學員轉化為高價課程付費者，建立可持續現金流。",
+                items: [
+                    { action: "推出高價核心課", why: "結合日文+理財思維，反映市場價值", result: "正式開售旗艦課程 (3-5萬/人)" },
+                    { action: "善用「文字力量」", why: "優化銷售轉化率", result: "高轉換率銷售頁面文案" },
+                    { action: "建立社群與互助", why: "口碑行銷與尋找夥伴", result: "第一個學員畢業群組" }
+                ]
+            }
+        ];
+
+        // Matrix Data (Capabilities)
+        const matrixItems = [
+            // Mastered
+            { type: 'master', title: "寫感謝卡", desc: "給予朋友祝福", icon: "fa-envelope", color: "text-pink-500", bg: "bg-pink-50" },
+            { type: 'master', title: "日語教學經驗", desc: "豐富且專業", icon: "fa-chalkboard-teacher", color: "text-blue-600", bg: "bg-blue-50" },
+            { type: 'master', title: "文字的力量", desc: "給予讚美與支持", icon: "fa-pen-nib", color: "text-indigo-600", bg: "bg-indigo-50" },
+            // Can Do
+            { type: 'can', title: "YS 講師簡報", desc: "製作課程簡報", icon: "fa-laptop", color: "text-stone-600", bg: "bg-stone-50" },
+            { type: 'can', title: "分享課程資訊", desc: "行銷推廣", icon: "fa-share-alt", color: "text-stone-600", bg: "bg-stone-50" },
+            { type: 'can', title: "聽日文歌", desc: "初音、交響樂", icon: "fa-music", color: "text-stone-600", bg: "bg-stone-50" },
+            { type: 'can', title: "行銷履歷", desc: "每天寄出一封", icon: "fa-paper-plane", color: "text-stone-600", bg: "bg-stone-50" },
+            { type: 'can', title: "日文講義", desc: "持續產出新內容", icon: "fa-file-alt", color: "text-stone-600", bg: "bg-stone-50" },
+            { type: 'can', title: "自我提升", desc: "Podcast、英語演講、閱讀", icon: "fa-headphones", color: "text-stone-600", bg: "bg-stone-50" },
+            // Want to Do
+            { type: 'want', title: "OH 卡諮詢師", desc: "探索內在直覺", icon: "fa-cards", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "美國企管碩士", desc: "$500萬美金課程", icon: "fa-university", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "事業團隊", desc: "合作夥伴與家庭和諧", icon: "fa-users", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "全日文翻譯", desc: "專業服務", icon: "fa-language", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "日本旅行", desc: "體驗生活", icon: "fa-plane", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "擴展舒適圈", desc: "認識不同領域朋友", icon: "fa-handshake", color: "text-orange-600", bg: "bg-orange-50" },
+            { type: 'want', title: "月入十萬", desc: "頂尖行銷講師", icon: "fa-chart-line", color: "text-orange-600", bg: "bg-orange-50" }
+        ];
+
+        // --- Functions ---
+
+        // 1. Initialize Charts
+        function initCharts() {
+            // Radar Chart - Competencies
+            const ctxRadar = document.getElementById('competencyChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['日語教學', '行銷策略', 'AI 工具應用', '個人成長', '人際溝通'],
+                    datasets: [{
+                        label: '核心競爭力指數',
+                        data: [95, 85, 90, 80, 95], // Estimated high values based on "Mastered" and goals
+                        fill: true,
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)', // Orange-600 with opacity
+                        borderColor: 'rgb(234, 88, 12)',
+                        pointBackgroundColor: 'rgb(234, 88, 12)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(234, 88, 12)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: {
+                                font: { size: 14, family: "'Noto Sans TC', sans-serif" },
+                                color: '#44403c'
+                            },
+                            suggestedMin: 50,
+                            suggestedMax: 100,
+                            ticks: { display: false } // Hide numbers for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Doughnut Chart - Revenue Goal
+            const ctxDoughnut = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['旗艦線上課程', '專業工作坊', '一對一/企業諮詢', '翻譯服務'],
+                    datasets: [{
+                        label: '預估收入佔比',
+                        data: [50, 20, 20, 10], // Hypothetical mix for 100k goal
+                        backgroundColor: [
+                            '#ea580c', // Orange
+                            '#fb923c', // Light Orange
+                            '#64748b', // Slate
+                            '#cbd5e1'  // Light Slate
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { font: { family: "'Noto Sans TC', sans-serif" } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Render Roadmap Phase
+        function switchPhase(index) {
+            // Update Tab Styles
+            document.querySelectorAll('button[id^="tab-"]').forEach((btn, i) => {
+                if (i === index) {
+                    btn.className = "nav-active px-6 py-4 text-sm font-medium focus:outline-none transition-all";
+                    // Add active filter visual indicator
+                } else {
+                    btn.className = "text-stone-500 hover:text-stone-700 px-6 py-4 text-sm font-medium focus:outline-none transition-all";
+                }
+            });
+
+            // Update Content
+            const data = phases[index];
+            const container = document.getElementById('phase-content');
+            
+            let html = `
+                <div class="animate-fade-in">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-stone-800 mb-2">${data.title}</h3>
+                        <p class="text-stone-600 italic bg-white p-3 rounded-lg border border-stone-100 inline-block">
+                            <i class="fas fa-bullseye text-orange-500 mr-2"></i>目標：${data.goal}
+                        </p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-stone-200">
+                            <thead class="bg-stone-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">行動項目 (Do)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">目的 (Why)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">成果 (Deliverable)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-stone-200">
+            `;
+
+            data.items.forEach(item => {
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-normal text-sm font-medium text-stone-900">${item.action}</td>
+                        <td class="px-6 py-4 whitespace-normal text-sm text-stone-500">${item.why}</td>
+                        <td class="px-6 py-4 whitespace-normal text-sm text-stone-500">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ${item.result}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // 3. Render Matrix Grid
+        function renderMatrix(filterType) {
+            const container = document.getElementById('matrix-grid');
+            container.innerHTML = '';
+            
+            const filtered = filterType === 'all' 
+                ? matrixItems 
+                : matrixItems.filter(item => item.type === filterType);
+
+            filtered.forEach(item => {
+                // Determine label
+                let label = "";
+                if(item.type === 'master') label = "精通的事";
+                if(item.type === 'can') label = "能做的事";
+                if(item.type === 'want') label = "想做的事";
+
+                const card = document.createElement('div');
+                card.className = `${item.bg} p-6 rounded-xl border border-stone-100 shadow-sm card-hover flex flex-col justify-between animate-fade-in`;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="${item.color} p-2 bg-white rounded-lg shadow-sm">
+                                <i class="fas ${item.icon} text-xl"></i>
+                            </div>
+                            <span class="text-xs font-semibold uppercase tracking-wide text-stone-400">${label}</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-stone-800 mb-1">${item.title}</h4>
+                        <p class="text-sm text-stone-600">${item.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterMatrix(type) {
+            // Update button styles
+            document.querySelectorAll('.matrix-filter').forEach(btn => {
+                if(btn.dataset.filter === type) {
+                    btn.classList.remove('text-stone-500', 'hover:bg-stone-100');
+                    btn.classList.add('bg-stone-100', 'text-stone-900', 'hover:bg-stone-200');
+                } else {
+                    btn.classList.add('text-stone-500', 'hover:bg-stone-100');
+                    btn.classList.remove('bg-stone-100', 'text-stone-900', 'hover:bg-stone-200');
+                }
+            });
+            renderMatrix(type);
+        }
+
+        // 4. Scroll Helper
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            switchPhase(0); // Load Phase 1 by default
+            renderMatrix('all'); // Load all capabilities
+        });
+
+    </script>
+</body>
+</html>
